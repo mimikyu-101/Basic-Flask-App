@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Employee - {{ employee.first_name }} {{ employee.last_name }}</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .main-container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            border-bottom: 3px solid #ffc107;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="bi bi-people-fill"></i> Employee Management
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-pencil-square"></i> Update Employee
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container main-container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="form-container">
+                    <!-- Form Header -->
+                    <div class="form-header">
+                        <h2>
+                            <i class="bi bi-person-gear"></i> Update Employee Information
+                        </h2>
+                        <p class="text-muted mb-0">
+                            Currently editing: <strong>{{ employee.first_name }} {{ employee.last_name }}</strong> 
+                            (ID: {{ employee.id }})
+                        </p>
+                    </div>
+
+                    <!-- Update Form -->
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div>
+                            {{ form.first_name.label }} {{ form.first_name(size=32) }}
+                            {% for error in form.first_name.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.last_name.label }} {{ form.last_name(size=32) }}
+                            {% for error in form.last_name.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.email.label }} {{ form.email(size=32) }}
+                            {% for error in form.email.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.phone.label }} {{ form.phone(size=32) }}
+                            {% for error in form.phone.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.password.label }} {{ form.password(type="password", size=32) }}
+                            <small class="text-muted">Leave blank to keep current password.</small>
+                            {% for error in form.password.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {{ form.submit(class_="btn btn-primary mt-3 w-100") }}
+                    </form>
+
+                    <!-- Employee Information Card -->
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h5 class="mb-3">
+                            <i class="bi bi-info-circle"></i> Current Information
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Employee ID:</strong> {{ employee.id }}</p>
+                                <p><strong>Full Name:</strong> {{ employee.first_name }} {{ employee.last_name }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Email:</strong> {{ employee.email }}</p>
+                                <p><strong>Phone:</strong> {{ employee.phone }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4 bg-light text-center">
+        <div class="container">
+            <p class="text-muted mb-0">
+                Employee Management System &copy; 2024 | Built with Flask & Bootstrap
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
