@@ -231,3 +231,5 @@ if __name__ == "__main__":
             session.permanent = True
     # Run the application in debug mode
     app.run(debug=True)
+    # changes added manually for push conflict
+
