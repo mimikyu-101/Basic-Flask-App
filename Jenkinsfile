@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.10-slim'
+        }
+    }
 
     environment {
         VENV_DIR = "venv"
@@ -21,10 +25,9 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                echo "Setting up Python virtual environment and installing dependencies..."
+                echo "Installing Python dependencies..."
                 sh '''
-                    python3 -m venv $VENV_DIR
-                    . $VENV_DIR/bin/activate
+                    python --version
                     pip install --upgrade pip
                     pip install -r requirements.txt
                 '''
@@ -33,9 +36,8 @@ pipeline {
 
         stage('Run Unit Tests') {
             steps {
-                echo "Running unit tests using pytest..."
+                echo "Running unit tests..."
                 sh '''
-                    . $VENV_DIR/bin/activate
                     pytest || echo "No tests found or tests failed"
                 '''
             }
@@ -43,7 +45,7 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                echo "Building application (packaging source)..."
+                echo "Building application..."
                 sh '''
                     mkdir -p build
                     cp -r app.py templates static build/ || true
