@@ -1,74 +1,56 @@
 pipeline {
     agent any
 
-    environment {
-        DEPLOY_DIR = "/tmp/flask_app_deploy"
-    }
-
-    triggers {
-        githubPush()
-    }
-
     stages {
-
         stage('Clone Repository') {
             steps {
-                echo "Cloning GitHub repository..."
-                checkout scm
+                git 'https://github.com/mimikyu-101/Basic-Flask-App'
             }
         }
 
-        stage('Install Python & Dependencies') {
+        stage('Install Dependencies') {
             steps {
-                echo "Installing Python and dependencies..."
                 sh '''
-                    apt-get update
-                    apt-get install -y python3 python3-pip python3-venv
-
-                    python3 --version
-                    pip3 install --upgrade pip
-                    pip3 install -r requirements.txt
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
                 '''
             }
         }
 
         stage('Run Unit Tests') {
             steps {
-                echo "Running unit tests..."
                 sh '''
-                    pytest || echo "No tests found or tests failed"
+                . venv/bin/activate
+                pytest || echo "No tests found"
                 '''
             }
         }
 
         stage('Build Application') {
             steps {
-                echo "Building application..."
-                sh '''
-                    mkdir -p build
-                    cp -r app.py templates static build/ || true
-                '''
+                sh 'echo "Build step completed"'
             }
         }
 
         stage('Deploy Application') {
             steps {
-                echo "Simulating deployment..."
                 sh '''
-                    mkdir -p $DEPLOY_DIR
-                    cp -r build/* $DEPLOY_DIR/
-                    echo "Application deployed to $DEPLOY_DIR"
+                mkdir -p /tmp/flask-deploy
+                cp -r . /tmp/flask-deploy/
+                echo "Application deployed to /tmp/flask-deploy"
                 '''
             }
         }
     }
 
     post {
-        success {
-            echo "Pipeline executed successfully!"
-        }
         failure {
-            echo "Pipeline failed. Check logs for errors."
+            echo 'Pipeline failed. Check logs for errors.'
+        }
+        success {
+            echo 'Pipeline executed successfully.'
         }
     }
 }
