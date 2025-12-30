@@ -1,12 +1,7 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.10-slim'
-        }
-    }
+    agent any
 
     environment {
-        VENV_DIR = "venv"
         DEPLOY_DIR = "/tmp/flask_app_deploy"
     }
 
@@ -23,13 +18,16 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Python & Dependencies') {
             steps {
-                echo "Installing Python dependencies..."
+                echo "Installing Python and dependencies..."
                 sh '''
-                    python --version
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                    apt-get update
+                    apt-get install -y python3 python3-pip python3-venv
+
+                    python3 --version
+                    pip3 install --upgrade pip
+                    pip3 install -r requirements.txt
                 '''
             }
         }
